@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coffee</title>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<style>
+#extraction {
+  font-weight: bold;
+}
+
+</style>
+
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+$( function() {
+
+
+
+    $("#brewRatio").change(function(){
+		calcDryDose($("#slider").slider("option","value"),$("#brewRatio option:selected").val());
+	});
+
+   var handle = $( "#custom-handle" );
+    $( "#slider2" ).slider({
+      create: function() {
+        handle.text( $( this ).slider( "value" ) );
+      },
+      slide: function( event, ui ) {
+        handle.text( ui.value );
+        $( ".tds" ).val( ui.value );
+        calcExtraction(ui.value,$("#drydose").text());
+      },
+      min: 800,
+      max: 1600,
+      value: 950,
+      range: "min",
+      step: 50
+    });
+
+
+    			
+
+
+  $( "#slider" ).slider({
+      orientation: "vertical",
+      min: 50,
+      max: 350,
+      value: 200,
+      range: "min",
+      step: 10,
+      slide: function( event, ui ) {
+        $( "#cupSize" ).val( ui.value );
+        calcDryDose($("#slider").slider("option","value"),$("#brewRatio option:selected").val());
+      }
+
+  });
+  $("#cupSize").val( $("#slider").slider("value") );
+  $( ".tds" ).val( $("#slider2").slider("value"));
+
+
+calcDryDose($("#slider").slider("option","value"),$("#brewRatio option:selected").val());
+
+console.log($("#slider").slider("option","value") + ",,,"+$("#brewRatio option:selected").val());
+} );
+
+
+
+const calcDryDose = (cupSize, brewRatio) => {
+	$("#drydose").html(((cupSize / 1000) * brewRatio).toFixed(1));
+    calcExtraction( $( ".tds" ).val(),$("#drydose").html(),cupSize)
+    return 1;
+}
+const calcExtraction = (tds,drydose,cupSize) => {
+	$("#extraction").html((tds / drydose).toFixed(2));
+return 1;
+
+}
+</script>
+</head>
+<body>
+NEED MORE WORK ON THIS, NEED TO CLARIFY FORMULA MORE..1 MARCH 2018
+<div id="slider"></div>
+
+
+<div id="slider2">
+    <div id="custom-handle" class="ui-slider-handle" style="width: 100px"></div>
+</div>  
+  
+
+<p>
+    <label for="cupSize">Cup Size (ml):</label>
+    <input type="text" id="cupSize" readonly style="border:0; color:#f6931f; font-weight:bold;">
+</p>
+<p>
+    <label for="tds">TDS (ppm):</label>
+    <input type="text" class="tds" readonly style="border:0; color:#f6931f; font-weight:bold;">
+</p>
+
+
+<table border=1>
+	<tr>
+        <td>Brew Ratio (grams/litre)</td><td><select id="brewRatio" name="brewRatio">
+              <option value="55">55g/l</option>
+            <option value="56">56g/l</option>
+            <option value="57">57g/l</option>
+            <option value="58">58g/l</option>
+            </select></td>
+     </tr>
+
+<tr><td>DryDose</td><td><div id="drydose">xx</div></td></tr>
+
+<tr><td colspan="2">&nbsp;</td></tr>
+
+<tr><td>TDS</td><td><input type="text" class="tds" readonly style="border:0; color:#f6931f; font-weight:bold;"></tr>
+
+<tr><td>Extraction</td><td><div id="extraction">xx</div></td></tr>
+
+<tr><td colspan="2"><div id="showTDS">xcccc</div>&nbsp;</td></tr>
+
+     <tr><td colspan="2"><input type = "submit" value = "Submit">
+</td></tr>
+
+
+</table>
+<img src="img/brewChart.jpg"/>
+</body>
+
+</html>
+
+
